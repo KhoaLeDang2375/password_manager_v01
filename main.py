@@ -29,23 +29,37 @@ def Save_Passwords():
         data_web = website_entry.get()
         data_email = email_entry.get()
         data_password =password_entry.get()
-        new_data ={data_web:{
+        new_data ={
+              data_web:{
          "email":data_email,
          "password":data_password}
          }
         #Website_name or Password is empty
-        if(len(data_web) == 0 or len(data_password) == 0):
-             messagebox.askretrycancel(title="Warning!!",message="Please don't leave any fileds empty!")
-        #Website name and Password isn't empty
+        if len(data_web) == 0 or len(data_password) == 0:
+            messagebox.showwarning(title="Warning!", message="Please don't leave any fields empty!")
         else:
-            is_ok=messagebox.askyesnocancel(title="Oops", message=f" These are details entered: \n Email;{data_email}\n Password:{data_password}\nIs it ok to save your password?")
+            is_ok = messagebox.askyesnocancel(title="Confirm", message=f"These are the details entered:\nEmail: {data_email}\nPassword: {data_password}\nIs it okay to save?")
+        
             if is_ok:
+                    try:
+                        with open("myPassword.json", "r") as data_file:
+                            # Đọc dữ liệu cũ từ tệp
+                            data = json.load(data_file)
+                    except (FileNotFoundError, json.JSONDecodeError):
+                        # Nếu tệp không tồn tại hoặc lỗi định dạng, tạo dữ liệu trống
+                        data = {}
+                    
+                    # Cập nhật dữ liệu cũ với dữ liệu mới
+                    data.update(new_data)
+
                     with open("myPassword.json", "w") as data_file:
-                        json.dump(new_data,data_file,indent=4)
-                        website_entry.delete(0,END)
-                        email_entry.delete(0,END)
-                        email_entry.insert(0,"")
-                        password_entry.delete(0,END)
+                        # Lưu dữ liệu đã cập nhật
+                        json.dump(data, data_file, indent=4)
+
+                    # Xóa các mục nhập cũ trong các ô đầu vào
+                    website_entry.delete(0, END)
+                    password_entry.delete(0, END)
+                    email_entry.insert(0, "ledangkhoa11a1@gmail.com")
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
