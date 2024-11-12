@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import random
 import pyperclip
+import json
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def Generate_password():
@@ -25,11 +26,13 @@ def Generate_password():
     pyperclip.copy(password)
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def Save_Passwords():
-    with open("myPassword.txt", "a") as f:
         data_web = website_entry.get()
         data_email = email_entry.get()
         data_password =password_entry.get()
-
+        new_data ={data_web:{
+         "email":data_email,
+         "password":data_password}
+         }
         #Website_name or Password is empty
         if(len(data_web) == 0 or len(data_password) == 0):
              messagebox.askretrycancel(title="Warning!!",message="Please don't leave any fileds empty!")
@@ -37,12 +40,12 @@ def Save_Passwords():
         else:
             is_ok=messagebox.askyesnocancel(title="Oops", message=f" These are details entered: \n Email;{data_email}\n Password:{data_password}\nIs it ok to save your password?")
             if is_ok:
-                    summary_data = f"{data_web} | {data_email} | {data_password}\n"
-                    website_entry.delete(0,END)
-                    email_entry.delete(0,END)
-                    email_entry.insert(0,"ledangkhoa11a1@gmail.com")
-                    password_entry.delete(0,END)
-                    f.write(summary_data)
+                    with open("myPassword.json", "w") as data_file:
+                        json.dump(new_data,data_file,indent=4)
+                        website_entry.delete(0,END)
+                        email_entry.delete(0,END)
+                        email_entry.insert(0,"")
+                        password_entry.delete(0,END)
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
@@ -68,7 +71,7 @@ website_entry.grid(row=1, column=1, columnspan=2)
 website_entry.focus()
 email_entry = Entry(width=35)
 email_entry.grid(row=2, column=1, columnspan=2)
-email_entry.insert(0, "angela@gmail.com")
+email_entry.insert(0, "ledangkhoa11a1@gmail.com")
 password_entry = Entry(width=21)
 password_entry.grid(row=3, column=1)
 
